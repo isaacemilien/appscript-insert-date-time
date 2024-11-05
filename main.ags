@@ -1,0 +1,38 @@
+function insertCurrentDateTime() {
+  const doc = DocumentApp.getActiveDocument();
+  const cursor = doc.getCursor();
+
+  // Define styles for headers
+  var style = {};
+  style[DocumentApp.Attribute.HEADING] = DocumentApp.ParagraphHeading.HEADING1;
+
+  const h2s = ["Summary of Key Issues/Events", "Solutions/Attempts", "Reflections"];
+
+  if (cursor) {
+    const date = new Date();
+    const formattedDate = Utilities.formatDate(date, Session.getScriptTimeZone(), "yyyy/MM/dd HH:mm");
+
+    // Insert Header 1 with date
+    const header1Element = cursor.insertText(formattedDate);
+    header1Element.getParent().setAttributes(style);
+
+    style[DocumentApp.Attribute.HEADING] = DocumentApp.ParagraphHeading.HEADING2;
+
+    for(i = 0; i < h2s.length; i++){
+      // Insert Header 2 with specified text
+      const header2Element = doc.getBody().appendParagraph(h2s[i]);
+      header2Element.setAttributes(style);
+    }
+
+
+  } else {
+    DocumentApp.getUi().alert("Place your cursor where you want to insert the date and time.");
+  }
+}
+
+function onOpen() {
+  const ui = DocumentApp.getUi();
+  ui.createMenu('Custom Tools')
+    .addItem('InDaTi', 'insertCurrentDateTime')
+    .addToUi();
+}
